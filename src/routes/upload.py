@@ -116,18 +116,17 @@ def generate_barcodes(data, unique_id):
         # إضافة النص (العنوان والرقم)
         try:
             # محاولة استخدام خط عربي إذا كان متوفراً
-            font_name = ImageFont.truetype("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", 18) # Increased size for name
-            font_number = ImageFont.truetype("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", 10) # Decreased size for number
+            font = ImageFont.truetype("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", 14)
         except:
             # استخدام الخط الافتراضي إذا لم يكن الخط العربي متوفراً
-            font_name = ImageFont.load_default()
-            font_number = ImageFont.load_default()
+            font = ImageFont.load_default()
         
         # كتابة العنوان والرقم
-        draw.text((10, 5), item_name, fill='black', font=font_name) # Adjusted vertical position
+        draw.text((10, 10), item_name, fill='black', font=font)
+        draw.text((10, 30), item_number, fill='black', font=font)
         
         # إنشاء الباركود
-        barcode_class = Code128(item_number, writer=ImageWriter(write_text=False))
+        barcode_class = Code128(item_number, writer=ImageWriter())
         barcode_filename = f'{BARCODES_FOLDER}/barcode_{unique_id}_{i}'
         barcode_path = barcode_class.save(barcode_filename)
         
@@ -136,11 +135,13 @@ def generate_barcodes(data, unique_id):
         barcode_img = barcode_img.resize((350, 100))  # تغيير حجم الباركود
         
         # لصق الباركود في الصورة
-        img.paste(barcode_img, (25, 60)) # Adjusted vertical position
+        img.paste(barcode_img, (25, 70))
         
         # حفظ الصورة النهائية
         label_path = f'{BARCODES_FOLDER}/label_{unique_id}_{i}.png'
         img.save(label_path)
+        barcode_paths.append(label_path)
+    
     return barcode_paths
 
 def create_pdf(barcode_paths, pdf_path):
