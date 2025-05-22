@@ -127,7 +127,7 @@ def generate_barcodes(data, unique_id):
         draw.text((10, 5), item_name, fill='black', font=font_name) # Adjusted vertical position
         
         # إنشاء الباركود
-        barcode_class = Code128(item_number, writer=ImageWriter())
+        barcode_class = Code128(item_number, writer=ImageWriter(write_text=False))
         barcode_filename = f'{BARCODES_FOLDER}/barcode_{unique_id}_{i}'
         barcode_path = barcode_class.save(barcode_filename)
         
@@ -141,8 +141,6 @@ def generate_barcodes(data, unique_id):
         # حفظ الصورة النهائية
         label_path = f'{BARCODES_FOLDER}/label_{unique_id}_{i}.png'
         img.save(label_path)
-        barcode_paths.append(label_path)
-    
     return barcode_paths
 
 def create_pdf(barcode_paths, pdf_path):
